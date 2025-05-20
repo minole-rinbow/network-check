@@ -12,27 +12,28 @@
   <h1>內外網連線狀態檢查</h1>
   <p>正在檢查您的 IP 與連線狀態...</p>
   <div id="ipInfo" class="status"></div>
-  <div id="googleStatus" class="status"></div>
+  <div id="extStatus" class="status"></div>
 
   <script>
-    // 取得外網 IP
-    fetch('https://api.ipify.org?format=json')
+    // 取得外部 IP
+    fetch('https://ipinfo.io/json')
       .then(res => res.json())
       .then(data => {
         const ip = data.ip;
-        document.getElementById('ipInfo').innerHTML = `您的外部 IP 是：<b>${ip}</b>`;
+        const org = data.org || "未知 ISP";
+        document.getElementById('ipInfo').innerHTML = `您的外部 IP 是：<b>${ip}</b><br>ISP：${org}`;
       })
       .catch(() => {
-        document.getElementById('ipInfo').innerHTML = '無法取得外部 IP，可能無外網連線。';
+        document.getElementById('ipInfo').innerHTML = '無法取得外部 IP（可能無外網）。';
       });
 
-    // 測試是否可連 Google
-    fetch('https://www.google.com/favicon.ico', { mode: 'no-cors' })
+    // 測試能否連通外網 (Cloudflare)
+    fetch('https://www.cloudflare.com/favicon.ico', { mode: 'no-cors' })
       .then(() => {
-        document.getElementById('googleStatus').innerHTML = '外網狀態：<span style="color:green;">可連外網</span>';
+        document.getElementById('extStatus').innerHTML = '外網狀態：<span style="color:green;">可連外網</span>';
       })
       .catch(() => {
-        document.getElementById('googleStatus').innerHTML = '外網狀態：<span style="color:red;">無法連外網</span>';
+        document.getElementById('extStatus').innerHTML = '外網狀態：<span style="color:red;">無法連外網</span>';
       });
   </script>
 </body>
